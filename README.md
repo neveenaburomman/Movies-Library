@@ -21,3 +21,5 @@ to build the movie app we need to follow these steps :
 
 ## Project Features
 this movie app will give you a brief (the story behind it , rate ,cast , date of release ,etc ) about the movie . 
+
+<img src="./assets/WR RC.png"  alt="Getting started" />
