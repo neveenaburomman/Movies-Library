@@ -3,6 +3,14 @@
 const express = require('express');
 const jsonData = require("./Movie Data/data.json")
 const app = express();
+const axios = require("axios");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+
+
+
 
 
 function movieBrief (title, poster_path, overview) {
@@ -27,6 +35,16 @@ console.log("hi again");
 
 
 
+
+
+
+
+function errorHandler(message,req,res){
+    
+    const err={ status : 500,   message : message.message };
+
+    return res.status(500).send(err);
+}
 
 
 
