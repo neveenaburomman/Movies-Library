@@ -119,7 +119,7 @@ function searchHandler(req,res){
   function updateHandler(req , res){
     const id = req.params.id;
     const movie = req.body;
-    const sql = `UPDATE THEmovie SET comment=$1 WHERE id=${id} RETURNING *;`
+    const sql = `UPDATE the movie SET comment=$1 WHERE id=${id} RETURNING *;`
     const values = [movie.comment];
    
     client.query(sql,values).then(data => {
@@ -132,7 +132,7 @@ function searchHandler(req,res){
 function deleteHandler(req,res){
 
     const id = req.params.id;
-    const sql = `DELETE FROM THEmovie WHERE id=${id};`
+    const sql = `DELETE FROM the movie WHERE id=${id};`
 
     client.query(sql).then(() => {
         return res.status(204).json([]);
@@ -144,7 +144,7 @@ function deleteHandler(req,res){
 function getMovieHandler(req , res){
 
     const id = req.params.id;
-    const sql = `SELECT * FROM THEmovie WHERE id=${id}`;
+    const sql = `SELECT * FROM the movie  WHERE id=${id}`;
 
     client.query(sql).then(data => {
         
@@ -166,7 +166,7 @@ function getMovieHandler(req , res){
 
   function addMovieHandler(req, res) {
     let movie = req.body;
-    let sql = `INSERT INTO favmovies(title, release_date, poster_path, overview, comment) VALUES($1, $2, $3, $4, $5) RETURNING *;`;
+    let sql = `INSERT INTO the movie (title, release_date, poster_path, overview, comment) VALUES($1, $2, $3, $4, $5) RETURNING *;`;
     let values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment];
 
     client.query(sql, values).then((data) => {
