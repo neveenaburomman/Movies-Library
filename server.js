@@ -6,7 +6,7 @@ const jsonData = require("./Movie Data/data.json")
 const app = express();
 const axios = require("axios");
 const dotenv = require("dotenv");
-const { Client } = require('pg/lib');
+const  client  = require('pg/lib');
 dotenv.config();
 
 const pg = require('pg');
@@ -17,6 +17,10 @@ const APIKEY=process.env.APIKEY;
 
 const PORT = process.env.PORT;
 
+app.use(errorHandler);
+
+
+app.use(express.json());
 
 
 function movieBrief (title, poster_path, overview) {
@@ -112,23 +116,51 @@ function searchHandler(req,res){
 
   })}
 
-  app.get('/', homeHandlerPage);
+  function updateHandler(req , res){
+    const id = req.params.id;
+    const movie = req.body;
+    const sql = `UPDATE THEmovie SET comment=$1 WHERE id=${id} RETURNING *;`
+    const values = [movie.comment];
+   
+    client.query(sql,values).then(data => {
+        return res.status(200).json(data.rows);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+};
+
+function deleteHandler(req,res){
+
+    const id = req.params.id;
+    const sql = `DELETE FROM THEmovie WHERE id=${id};`
+
+    client.query(sql).then(() => {
+        return res.status(204).json([]);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+}
+
+function getMovieHandler(req , res){
+
+    const id = req.params.id;
+    const sql = `SELECT * FROM THEmovie WHERE id=${id}`;
+
+    client.query(sql).then(data => {
+        
+      return  res.status(200).json(data.rows);
+    }).catch(error => {
+        console.log(error);
+        errorHandler(error, req, res);
+    })
+}
+
+
+
+
+
+
   
-  app.get("/favorite", favoriteHandler);
-  
-  app.get('/trending',trendingHandlerpage);
-
-  app.get('/search',searchHandler);
-
-  app.get('/toprated',topRatedHandler);
-
-  app.get('/genre',genreHandler);
-
-  app.post("/addMovie" , addMovieHandler);
-
-  app.get("/getMovies" , getMoviesHandler);
-
-  app.use("*",notFoundHandler);
 
 
 
@@ -168,6 +200,35 @@ function notFoundHandler(req,res){
 
     return  res.status(404).send("no end point with this name found");
   }
+
+
+
+
+  app.get('/', homeHandlerPage);
+  
+  app.get("/favorite", favoriteHandler);
+  
+  app.get('/trending',trendingHandlerpage);
+
+  app.get('/search',searchHandler);
+
+  app.get('/toprated',topRatedHandler);
+
+  app.get('/genre',genreHandler);
+
+  app.post("/addMovie" , addMovieHandler);
+
+  app.get("/getMovies" , getMoviesHandler);
+
+  app.put('/UPDATE/:id', updateHandler);
+
+  app.delete('/DELETE/:id', deleteHandler);
+
+  app.get('/getMovie/:id', getMovieHandler);
+
+  app.use("*",notFoundHandler);
+
+
 
 
 
