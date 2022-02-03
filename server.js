@@ -6,12 +6,16 @@ const jsonData = require("./Movie Data/data.json")
 const app = express();
 const axios = require("axios");
 const dotenv = require("dotenv");
-
+const { Client } = require('pg/lib');
 dotenv.config();
 
+const pg = require('pg');
+const DATABASE_URL = process.env.DATABASE_URL;
+const client = new pg.Client(DATABASE_URL);
 
 const APIKEY=process.env.APIKEY;
 
+const PORT = process.env.PORT;
 
 
 
@@ -108,6 +112,49 @@ function searchHandler(req,res){
 
   })}
 
+  app.get('/', homeHandlerPage);
+  
+  app.get("/favorite", favoriteHandler);
+  
+  app.get('/trending',trendingHandlerpage);
+
+  app.get('/search',searchHandler);
+
+  app.get('/toprated',topRatedHandler);
+
+  app.get('/genre',genreHandler);
+
+  app.post("/addMovie" , addMovieHandler);
+
+  app.get("/getMovies" , getMoviesHandler);
+
+  app.use("*",notFoundHandler);
+
+
+
+  function addMovieHandler(req, res) {
+    let movie = req.body;
+    let sql = `INSERT INTO favmovies(title, release_date, poster_path, overview, comment) VALUES($1, $2, $3, $4, $5) RETURNING *;`;
+    let values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment];
+
+    client.query(sql, values).then((data) => {
+        return res.status(201).json(data.rows);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+}
+
+function getMoviesHandler(req, res) {
+    
+     const sql = `SELECT * FROM favMovies;`
+    client.query(sql).then(data => {
+        return res.status(200).json(data.rows);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+
+}
+
 
 function errorHandler(message,req,res){
     
@@ -124,24 +171,10 @@ function notFoundHandler(req,res){
 
 
 
-  app.get('/', homeHandlerPage);
-  
-  app.get("/favorite", favoriteHandler);
-  
-  app.get('/trending',trendingHandlerpage);
 
-  app.get('/search',searchHandler);
-
-  app.get('/toprated',topRatedHandler);
-
-  app.get('/genre',genreHandler);
-
-  app.use("*",notFoundHandler);
-
-
+client.connect.then(()=>{
 app.listen(3000, () => {
-    console.log(
+    console.log( `i'm Listening to the  port ${PORT}`);
+});
 
-        "i'm Listening to the  port 3000"
-    );
-})
+});
