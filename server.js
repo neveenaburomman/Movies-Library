@@ -6,7 +6,7 @@ const jsonData = require("./Movie Data/data.json")
 const app = express();
 const axios = require("axios");
 const dotenv = require("dotenv");
-const { Client } = require('pg/lib');
+const  client  = require('pg/lib');
 dotenv.config();
 
 const pg = require('pg');
