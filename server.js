@@ -6,7 +6,7 @@ const jsonData = require("./Movie Data/data.json")
 const app = express();
 const axios = require("axios");
 const dotenv = require("dotenv");
-const  client  = require('pg/lib');
+
 dotenv.config();
 
 const pg = require('pg');
@@ -119,7 +119,7 @@ function searchHandler(req,res){
   function updateHandler(req , res){
     const id = req.params.id;
     const movie = req.body;
-    const sql = `UPDATE THEmovie SET comment=$1 WHERE id=${id} RETURNING *;`
+    const sql = `UPDATE myMovie SET comment=$1 WHERE id=${id} RETURNING *;`
     const values = [movie.comment];
    
     client.query(sql,values).then(data => {
@@ -132,7 +132,7 @@ function searchHandler(req,res){
 function deleteHandler(req,res){
 
     const id = req.params.id;
-    const sql = `DELETE FROM THEmovie WHERE id=${id};`
+    const sql = `DELETE FROM myMovie WHERE id=${id};`
 
     client.query(sql).then(() => {
         return res.status(204).json([]);
@@ -144,7 +144,7 @@ function deleteHandler(req,res){
 function getMovieHandler(req , res){
 
     const id = req.params.id;
-    const sql = `SELECT * FROM THEmovie WHERE id=${id}`;
+    const sql = `SELECT * FROM myMovie WHERE id=${id}`;
 
     client.query(sql).then(data => {
         
@@ -158,15 +158,9 @@ function getMovieHandler(req , res){
 
 
 
-
-
-  
-
-
-
   function addMovieHandler(req, res) {
     let movie = req.body;
-    let sql = `INSERT INTO favmovies(title, release_date, poster_path, overview, comment) VALUES($1, $2, $3, $4, $5) RETURNING *;`;
+    let sql = `INSERT INTO myMovie(title, release_date, poster_path, overview, comment) VALUES($1, $2, $3, $4, $5) RETURNING *;`;
     let values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment];
 
     client.query(sql, values).then((data) => {
@@ -176,16 +170,6 @@ function getMovieHandler(req , res){
     })
 }
 
-function getMoviesHandler(req, res) {
-    
-     const sql = `SELECT * FROM favMovies;`
-    client.query(sql).then(data => {
-        return res.status(200).json(data.rows);
-    }).catch(error => {
-        errorHandler(error, req, res);
-    })
-
-}
 
 
 function errorHandler(message,req,res){
@@ -233,7 +217,7 @@ function notFoundHandler(req,res){
 
 
 
-client.connect.then(()=>{
+client.connect().then(()=>{
 app.listen(3000, () => {
     console.log( `i'm Listening to the  port ${PORT}`);
 });
