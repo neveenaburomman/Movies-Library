@@ -17,10 +17,26 @@ const APIKEY=process.env.APIKEY;
 
 const PORT = process.env.PORT;
 
+app.use(express.json());
+
+app.get('/', homeHandlerPage);
+app.get('/hello', helloWorldHandler);
+
+app.get("/favorite", favoriteHandler);
+app.get('/trending',trendingHandlerpage);
+app.get('/search',searchHandler);
+app.get('/toprated',topRatedHandler);
+app.get('/genre',genreHandler);
+
+app.post("/addMovie" , addMovieHandler);
+app.get("/getMovies" ,  getMovieHandler );
+app.put('/UPDATE/:id', updateHandler);
+app.delete('/DELETE/:id', deleteHandler);
+
 app.use(errorHandler);
 
+app.use("*",notFoundHandler);
 
-app.use(express.json());
 
 
 function movieBrief (title, poster_path, overview) {
@@ -34,6 +50,12 @@ function homeHandlerPage(req,res){
     let firstMovie=new movieBrief(jsonData.title, jsonData.poster_path, jsonData.overview);
       return res.status(200).json(firstMovie);
   }
+
+
+
+  function helloWorldHandler(req, res) {
+    return res.status(200).send("Hello World");
+};
 
 
 
@@ -116,6 +138,8 @@ function searchHandler(req,res){
 
   })}
 
+
+
   function updateHandler(req , res){
     const id = req.params.id;
     const movie = req.body;
@@ -187,46 +211,23 @@ function notFoundHandler(req,res){
 
 
 
-
-  app.get('/', homeHandlerPage);
-  
-  app.get("/favorite", favoriteHandler);
-  
-  app.get('/trending',trendingHandlerpage);
-
-  app.get('/search',searchHandler);
-
-  app.get('/toprated',topRatedHandler);
-
-  app.get('/genre',genreHandler);
-
-  app.post("/addMovie" , addMovieHandler);
-
-  app.get("/getMovies" , getMoviesHandler);
-
-  app.put('/UPDATE/:id', updateHandler);
-
-  app.delete('/DELETE/:id', deleteHandler);
-
-  app.get('/getMovie/:id', getMovieHandler);
-
-  app.use("*",notFoundHandler);
+ 
 
 
 
 
 
 
-//client.connect().then(()=>{
-//app.listen(3000, () => {
- //   console.log( `i'm Listening to the  port ${PORT}`);
-//});
-
-//});
 
 const client = new pg.Client({
+
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
 
+client.connect().then(()=>{
+    app.listen(PORT, () => {
+        console.log( `i'm Listening to the  port ${PORT}`);
+    });
+});
