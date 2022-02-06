@@ -37,6 +37,14 @@ function homeHandlerPage(req,res){
 
 
 
+  function helloWorldHandler(req, res) {
+    return res.status(200).send("Hello World");
+};
+
+
+
+
+
   function favoriteHandler(req,res){
     return res.status(200).send("Welcome to Favorite page");
 }
@@ -116,6 +124,8 @@ function searchHandler(req,res){
 
   })}
 
+
+
   function updateHandler(req , res){
     const id = req.params.id;
     const movie = req.body;
@@ -187,6 +197,7 @@ function notFoundHandler(req,res){
 
 
 
+  app.get('/hello', helloWorldHandler);
 
   app.get('/', homeHandlerPage);
   
@@ -202,13 +213,12 @@ function notFoundHandler(req,res){
 
   app.post("/addMovie" , addMovieHandler);
 
-  app.get("/getMovies" , getMoviesHandler);
+  app.get("/getMovies" ,  getMovieHandler );
 
   app.put('/UPDATE/:id', updateHandler);
 
   app.delete('/DELETE/:id', deleteHandler);
 
-  app.get('/getMovie/:id', getMovieHandler);
 
   app.use("*",notFoundHandler);
 
