@@ -39,7 +39,7 @@ app.use("*",notFoundHandler);
 
 
 
-function movieBrief (title, poster_path, overview) {
+function movieBrief (id,title,release_date, poster_path, overview) {
     this.id = id;
     this.title= title;
     this.release_date=release_date;
