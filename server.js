@@ -41,8 +41,8 @@ app.use("*",notFoundHandler);
 
 function movieBrief (title, poster_path, overview) {
     this.id = id;
-    this.title=title;
-    this.release_date=
+    this.title= title;
+    this.release_date=release_date;
     this.poster_path = poster_path;
     this.overview = overview;
 }
