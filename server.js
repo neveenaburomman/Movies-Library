@@ -6,7 +6,8 @@ const jsonData = require("./Movie Data/data.json")
 const app = express();
 const axios = require("axios");
 const dotenv = require("dotenv");
-
+const cors = require('cors');
+app.use(cors());
 dotenv.config();
 
 const pg = require('pg');
